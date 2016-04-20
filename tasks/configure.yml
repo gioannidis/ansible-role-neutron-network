@@ -24,7 +24,7 @@
     - { section: DEFAULT, option: rabbit_virtual_host, value: /neutron }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
     - { section: DEFAULT, option: core_plugin, value: ml2 }
-    - { section: DEFAULT, option: service_plugins, value: router }
+    - { section: DEFAULT, option: service_plugins, value: "router,lbaas" }
     - { section: DEFAULT, option: allow_overlapping_ips, value: true }
     - { section: keystone_authtoken, option: auth_uri,
         value: "{{ openstack_identity_internal_url }}" }
@@ -84,6 +84,20 @@
         value: neutron.agent.linux.interface.OVSInterfaceDriver }
     - { section: DEFAULT, option: use_namespaces, value: true }
   register: modify_l3_agent_ini
+
+- name: ensure lbaas_agent.ini is properly configured
+  ini_file:
+    dest: /etc/neutron/lbaas_agent.ini
+    group: neutron
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT, option: device_driver, value: neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver }
+    - { section: DEFAULT, option: interface_driver, value: neutron.agent.linux.interface.OVSInterfaceDriver }
+    - { section: haproxy, option: user_group, value: haproxy }
+  register: modify_lbaas_agent_ini
 
 - name: ensure dhcp_agent.ini is properly configured
   ini_file:
@@ -158,6 +172,7 @@
     done || true
   when: modify_neutron_ini|changed or modify_ml2_ini|changed or
         modify_l3_agent_ini|changed or 
+        modify_lbaas_agent_ini|changed or
         modify_dhcp_agent_ini|changed or 
         modify_metadata_agent_ini|changed
 

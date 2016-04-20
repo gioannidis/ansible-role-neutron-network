@@ -15,6 +15,8 @@ openstack_neutron_network_package_info:
     - neutron-metadata-agent
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
+    - neutron-lbaas-agent
+    - haproxy
 
 openstack_neutron_network_repo_info:
   pkg_repo: apt_repository
