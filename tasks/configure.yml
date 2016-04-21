@@ -37,6 +37,7 @@
     - { section: keystone_authtoken, option: admin_user, value: neutron }
     - { section: keystone_authtoken, option: admin_password,
         value: "{{ openstack_identity_neutron_password }}" }
+    - { section: service_providers, option: service_provider, value: "LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default" }
   register: modify_neutron_ini
 
 - name: ensure ml2_conf.ini is properly configured
