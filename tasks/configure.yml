@@ -97,6 +97,7 @@
     - { section: DEFAULT, option: device_driver, value: neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver }
     - { section: DEFAULT, option: interface_driver, value: neutron.agent.linux.interface.OVSInterfaceDriver }
     - { section: haproxy, option: user_group, value: haproxy }
+    - { section: haproxy, option: loadbalancer_state_path, value: "$state_path/lbaas" }
   register: modify_lbaas_agent_ini
 
 - name: ensure dhcp_agent.ini is properly configured
